@@ -10,6 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function AddDataModal() {
+  // tu utilise ici le custom hook que t'aura fais genre useUploadData
+
   return (
     <Dialog>
       <DialogTrigger asChild>
