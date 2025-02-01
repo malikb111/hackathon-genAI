@@ -1,5 +1,3 @@
-// code ici la logique d'upload de donnees
-// tu fais un custom hook
 import { useState } from "react";
 import * as XLSX from "xlsx";
 
