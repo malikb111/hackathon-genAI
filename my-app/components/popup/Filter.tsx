@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Filter as FilterIcon, Check } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,8 +23,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-
-const mediaTypes = ["Twitter", "Facebook", "Instagram", "LinkedIn", "YouTube"];
+import { useFetchMediaTypes } from "@/hooks/use-fetch-media-types";
 
 const dateRanges = [
   { label: "Aujourd'hui", value: "today" },
@@ -40,6 +38,8 @@ export function Filter() {
   const [open, setOpen] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState<string | null>(null);
   const [selectedMedia, setSelectedMedia] = React.useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const { mediaTypes, isLoading, error } = useFetchMediaTypes();
 
   const toggleMedia = (media: string) => {
     setSelectedMedia((current) =>
@@ -49,17 +49,42 @@ export function Filter() {
     );
   };
 
+  const filteredMedia = React.useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    const filtered: { [key: string]: string[] } = {};
+
+    Object.entries(mediaTypes).forEach(([category, medias]) => {
+      const filteredMedias = medias.filter((media) =>
+        media.toLowerCase().includes(query)
+      );
+      if (filteredMedias.length > 0) {
+        filtered[category] = filteredMedias;
+      }
+    });
+
+    return filtered;
+  }, [searchQuery, mediaTypes]);
+
+  if (error) {
+    console.error("Erreur de chargement des médias:", error);
+  }
+
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="relative">
           <FilterIcon className="h-5 w-5" />
+          {selectedMedia.length > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-blue-500 text-[10px] text-white flex items-center justify-center">
+              {selectedMedia.length}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
         side="left"
-        className="w-[220px] p-2 shadow-lg rounded-xl border border-gray-200"
+        className="w-[240px] p-2 shadow-lg rounded-xl border border-gray-200"
       >
         <DropdownMenuLabel className="text-sm font-semibold text-gray-900 mb-1 px-2">
           Filtres
@@ -73,7 +98,7 @@ export function Filter() {
                   : "Période"}
               </span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="p-1 min-w-[180px] rounded-lg">
+            <DropdownMenuSubContent className="p-1 min-w-[160px] rounded-lg">
               {dateRanges.map((range) => (
                 <DropdownMenuItem
                   key={range.value}
@@ -92,35 +117,55 @@ export function Filter() {
                 Media {selectedMedia.length > 0 && `(${selectedMedia.length})`}
               </span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="p-1 min-w-[180px] rounded-lg">
+            <DropdownMenuSubContent className="p-1 min-w-[300px] rounded-lg">
               <Command className="rounded-lg border-none">
                 <CommandInput
                   placeholder="Rechercher un média..."
                   className="h-8 border-b focus:ring-0 focus:border-gray-300 px-2"
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
                 />
-                <CommandList>
-                  <CommandEmpty className="text-sm text-gray-500 py-1 px-2">
-                    Aucun média trouvé.
-                  </CommandEmpty>
-                  <CommandGroup>
-                    {mediaTypes.map((media) => (
-                      <CommandItem
-                        key={media}
-                        value={media}
-                        onSelect={() => toggleMedia(media)}
-                        className="flex items-center py-1.5 px-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="w-3.5 h-3.5 border rounded flex items-center justify-center border-gray-400">
-                            {selectedMedia.includes(media) && (
-                              <Check className="h-2.5 w-2.5 text-blue-600" />
-                            )}
-                          </div>
-                          <span className="text-sm text-gray-700">{media}</span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
+                <CommandList className="max-h-[300px] overflow-auto">
+                  {isLoading ? (
+                    <div className="text-sm text-gray-500 py-1 px-2">
+                      Chargement des médias...
+                    </div>
+                  ) : error ? (
+                    <div className="text-sm text-red-500 py-1 px-2">
+                      Erreur de chargement des médias
+                    </div>
+                  ) : (
+                    <>
+                      <CommandEmpty className="text-sm text-gray-500 py-1 px-2">
+                        Aucun média trouvé.
+                      </CommandEmpty>
+                      {Object.entries(filteredMedia).map(
+                        ([category, medias]) => (
+                          <CommandGroup key={category} heading={category}>
+                            {medias.map((media) => (
+                              <CommandItem
+                                key={media}
+                                value={media}
+                                onSelect={() => toggleMedia(media)}
+                                className="flex items-center py-1.5 px-2 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="w-3.5 h-3.5 border rounded flex items-center justify-center border-gray-400">
+                                    {selectedMedia.includes(media) && (
+                                      <Check className="h-2.5 w-2.5 text-blue-600" />
+                                    )}
+                                  </div>
+                                  <span className="text-sm text-gray-700">
+                                    {media}
+                                  </span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        )
+                      )}
+                    </>
+                  )}
                 </CommandList>
               </Command>
             </DropdownMenuSubContent>

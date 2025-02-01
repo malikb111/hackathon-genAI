@@ -8,7 +8,7 @@ import { AlertCard } from "@/components/cards/AlertCard";
 
 export default function Perception() {
   return (
-    <div className="mb-10">
+    <div className="mb-6">
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <SummaryCard
           title="Score global"
