@@ -4,6 +4,7 @@ import {
   XCircle,
   CheckCircle,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -16,43 +17,39 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
+import { useFetchNotifications } from "@/hooks/use-fetch-notifications";
 
 export function DrawerAlert() {
-  const alerts = [
-    {
-      icon: <AlertCircle className="h-5 w-5 text-yellow-500" />,
-      title: "Augmentation des mentions négatives sur Twitter",
-      time: "Il y a 2 heures",
-      type: "warning",
-    },
-    {
-      icon: <CheckCircle className="h-5 w-5 text-green-500" />,
-      title: "Article positif publié dans un journal majeur",
-      time: "Il y a 1 jour",
-      type: "success",
-    },
-    {
-      icon: <XCircle className="h-5 w-5 text-red-500" />,
-      title: "Pic de commentaires négatifs sur LinkedIn",
-      time: "Il y a 3 heures",
-      type: "error",
-    },
-    {
-      icon: <AlertTriangle className="h-5 w-5 text-orange-500" />,
-      title: "Nouvelle tendance émergente à surveiller",
-      time: "Il y a 5 heures",
-      type: "info",
-    },
-  ];
+  const { notifications, loading } = useFetchNotifications();
+
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "error":
+        return <XCircle className="h-5 w-5 text-red-500" />;
+      case "warning":
+        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+      case "success":
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      default:
+        return <AlertCircle className="h-5 w-5 text-blue-500" />;
+    }
+  };
+
+  const totalNotifications = notifications.reduce(
+    (acc, curr) => acc + curr.count,
+    0
+  );
 
   return (
     <Drawer>
       <DrawerTrigger asChild>
         <Button variant="outline" size="icon" className="relative">
           <Bell className="h-5 w-5" />
-          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center">
-            4
-          </span>
+          {totalNotifications > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-[10px] text-white flex items-center justify-center">
+              {totalNotifications}
+            </span>
+          )}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
@@ -65,25 +62,39 @@ export function DrawerAlert() {
           </DrawerDescription>
         </DrawerHeader>
         <div className="p-6">
-          <div className="space-y-4">
-            {alerts.map((alert, index) => (
-              <div
-                key={index}
-                className="flex items-start space-x-4 p-4 rounded-lg bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                <div className="flex-shrink-0 mt-1">{alert.icon}</div>
-                <div className="flex-1">
-                  <p className="font-medium text-sm text-gray-900">
-                    {alert.title}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">{alert.time}</p>
+          {loading ? (
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {notifications.map((notification, index) => (
+                <div
+                  key={index}
+                  className="flex items-start space-x-4 p-4 rounded-lg bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200"
+                >
+                  <div className="flex-shrink-0 mt-1">
+                    {getIcon(notification.type)}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-sm text-gray-900">
+                      {notification.title}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {notification.time}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {notification.count}{" "}
+                      {notification.count > 1 ? "mentions" : "mention"}
+                    </p>
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-xs">
+                    Marquer comme lu
+                  </Button>
                 </div>
-                <Button variant="ghost" size="sm" className="text-xs">
-                  Marquer comme lu
-                </Button>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
         <DrawerFooter className="border-t border-gray-100 bg-gray-50">
           <div className="flex justify-between w-full">
