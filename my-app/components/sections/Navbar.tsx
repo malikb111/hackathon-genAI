@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AddDataModal } from "@/components/AddDataModal";
+import { DrawerAlert } from "../popup/DrawerAlert";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -43,7 +44,6 @@ export function Navbar() {
             </Link>
           </nav>
         </div>
-
         <AddDataModal />
       </div>
     </div>

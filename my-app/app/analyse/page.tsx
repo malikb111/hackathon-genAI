@@ -46,7 +46,6 @@ export default function Perception() {
           <DonutChart />
         </CardChart>
       </div>
-      <AlertCard />
     </div>
   );
 }
