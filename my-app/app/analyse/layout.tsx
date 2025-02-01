@@ -12,9 +12,7 @@ export default function AnalyseLayout({
 }) {
   const pathname = usePathname();
 
-  const pageTitle = pathname.startsWith("/analyse")
-    ? "Analyse"
-    : "Vue d'ensemble";
+  const pageTitle = "Analyse";
 
   return (
     <div className="px-8">
