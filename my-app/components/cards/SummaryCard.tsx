@@ -14,7 +14,7 @@ interface CardProps {
   description?: string;
 }
 
-export function Card({
+export function SummaryCard({
   title,
   value,
   icon: Icon,
