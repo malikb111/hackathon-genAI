@@ -4,28 +4,27 @@ import { CardChart } from "@/components/cards/CardChart";
 import DonutChart from "@/components/charts/DonutChart";
 import BarChart from "@/components/charts/BarChart";
 import RadarChart from "@/components/charts/RadarChart";
-import { AlertCard } from "@/components/cards/AlertCard";
 
 export default function Perception() {
   return (
     <div className="mb-6">
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <SummaryCard
-          title="Score global"
-          value="78%"
+          title="Mentions Enedis"
+          value="78"
           icon={TrendingUp}
           description="+2% par rapport au mois dernier"
         />
         <SummaryCard
-          title="Mentions positives"
-          value={1234}
+          title="Sentiments positifs"
+          value={98}
           icon={TrendingUp}
           iconColor="text-green-600"
           description="+15% par rapport au mois dernier"
         />
         <SummaryCard
-          title="Mentions négatives"
-          value={432}
+          title="Sentiments négatifs"
+          value={12}
           icon={TrendingDown}
           iconColor="text-red-600"
           description="-5% par rapport au mois dernier"
@@ -33,7 +32,7 @@ export default function Perception() {
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        <CardChart title="Répartition par type" className="w-full">
+        <CardChart title="Opportunités detectées" className="w-full">
           <BarChart />
         </CardChart>
         <CardChart title="Répartition par source" className="w-full">

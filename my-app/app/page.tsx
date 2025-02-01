@@ -1,9 +1,13 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { RefreshCw } from "lucide-react";
 import { DrawerAlert } from "@/components/popup/DrawerAlert";
 import { Filter } from "@/components/popup/Filter";
+import { SummaryNotificationsCard } from "@/components/cards/SummaryNotificationsCard";
+import BarChart from "@/components/charts/BarChart";
+import DonutChart from "@/components/charts/DonutChart";
+import AreaChart from "@/components/charts/AreaChart";
+import { CardChart } from "@/components/cards/CardChart";
 
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
@@ -24,6 +28,25 @@ export default function Home() {
             Rafraîchir
             <RefreshCw size={16} />
           </button>
+        </div>
+      </div>
+
+      <div className="flex gap-6">
+        <div className="flex-1">
+          <div className="grid grid-cols-2 gap-6 mb-6">
+            <CardChart title="Répartition par type">
+              <BarChart />
+            </CardChart>
+            <CardChart title="Répartition par source">
+              <DonutChart />
+            </CardChart>
+          </div>
+          <CardChart title="Évolution temporelle">
+            <AreaChart />
+          </CardChart>
+        </div>
+        <div className="flex-none">
+          <SummaryNotificationsCard />
         </div>
       </div>
     </div>

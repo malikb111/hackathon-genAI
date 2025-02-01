@@ -34,19 +34,20 @@ interface ChartDataItem {
   date: string;
   matin: number;
   apresmidi: number;
+  soir: number;
 }
 
 const chartData: ChartDataItem[] = [
-  { date: "2024-04-01", matin: 45, apresmidi: 32 },
-  { date: "2024-04-02", matin: 52, apresmidi: 38 },
-  { date: "2024-04-03", matin: 48, apresmidi: 41 },
-  { date: "2024-04-04", matin: 61, apresmidi: 45 },
-  { date: "2024-04-05", matin: 55, apresmidi: 48 },
-  { date: "2024-04-06", matin: 42, apresmidi: 36 },
-  { date: "2024-04-07", matin: 38, apresmidi: 31 },
-  { date: "2024-04-08", matin: 57, apresmidi: 42 },
-  { date: "2024-04-09", matin: 53, apresmidi: 45 },
-  { date: "2024-04-10", matin: 59, apresmidi: 47 },
+  { date: "2024-04-01", matin: 45, apresmidi: 32, soir: 28 },
+  { date: "2024-04-02", matin: 52, apresmidi: 38, soir: 35 },
+  { date: "2024-04-03", matin: 48, apresmidi: 41, soir: 30 },
+  { date: "2024-04-04", matin: 61, apresmidi: 45, soir: 40 },
+  { date: "2024-04-05", matin: 55, apresmidi: 48, soir: 38 },
+  { date: "2024-04-06", matin: 42, apresmidi: 36, soir: 25 },
+  { date: "2024-04-07", matin: 38, apresmidi: 31, soir: 22 },
+  { date: "2024-04-08", matin: 57, apresmidi: 42, soir: 33 },
+  { date: "2024-04-09", matin: 53, apresmidi: 45, soir: 36 },
+  { date: "2024-04-10", matin: 59, apresmidi: 47, soir: 42 },
 ];
 
 const chartConfig = {
@@ -60,6 +61,10 @@ const chartConfig = {
   apresmidi: {
     label: "Après-midi (12h-18h)",
     color: "hsl(var(--chart-2))",
+  },
+  soir: {
+    label: "Soir (18h-24h)",
+    color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
 
@@ -117,7 +122,7 @@ export default function AreaChartComponent({
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillMatin" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="hsl(213, 90%, 50%)"
@@ -129,7 +134,7 @@ export default function AreaChartComponent({
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillApresMidi" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="hsl(213, 90%, 35%)"
@@ -138,6 +143,18 @@ export default function AreaChartComponent({
                 <stop
                   offset="95%"
                   stopColor="hsl(213, 90%, 35%)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillSoir" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="hsl(213, 90%, 20%)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="hsl(213, 90%, 20%)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -172,17 +189,24 @@ export default function AreaChartComponent({
               }
             />
             <Area
+              dataKey="soir"
+              type="natural"
+              fill="url(#fillSoir)"
+              stroke="hsl(var(--chart-3))"
+              stackId="a"
+            />
+            <Area
               dataKey="apresmidi"
               type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
+              fill="url(#fillApresMidi)"
+              stroke="hsl(var(--chart-2))"
               stackId="a"
             />
             <Area
               dataKey="matin"
               type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
+              fill="url(#fillMatin)"
+              stroke="hsl(var(--chart-1))"
               stackId="a"
             />
             <ChartLegend content={<ChartLegendContent />} />
