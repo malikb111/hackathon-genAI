@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { RefreshCw } from "lucide-react";
 import { DrawerAlert } from "@/components/popup/DrawerAlert";
-
+import { Filter } from "@/components/popup/Filter";
 export default function AnalyseLayout({
   children,
 }: {
@@ -66,6 +66,7 @@ export default function AnalyseLayout({
           <DrawerAlert />
         </div>
         <div className="flex items-center gap-4">
+          <Filter />
           <button className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800 flex items-center gap-2">
             Rafraîchir
             <RefreshCw size={16} />
