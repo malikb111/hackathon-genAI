@@ -21,15 +21,15 @@ export function AddDataModal() {
 	// tu utilise ici le custom hook que t'aura fais genre useUploadData
 	const [file, setFile] = useState<File | null>(null);
 	const [fileError, setFileError] = useState<string | null>(null);
-	const { uploadFile, isLoading } = useFileUpload('/api/upload');
-  
+	const { uploadFile, isLoading } = useFileUpload();
+
 	const handleFileDrop = (droppedFile: Array<File>) => {
 		const file = droppedFile[0];
-		if (file && (file.type === 'application/pdf' || file.type === 'text/csv')) {
+		if (file && (file.type === 'application/pdf' || file.name.endsWith('.xlsx'))) {
 		  setFile(file);
 		  setFileError(null);
 		} else {
-		  setFileError('Veuillez déposer un fichier CLS ou PDF');
+		  setFileError('Veuillez déposer un fichier XLSX ou PDF');
 		}
 	};
 
