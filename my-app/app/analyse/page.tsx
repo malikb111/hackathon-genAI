@@ -4,10 +4,11 @@ import { CardChart } from "@/components/cards/CardChart";
 import DonutChart from "@/components/charts/DonutChart";
 import BarChart from "@/components/charts/BarChart";
 import RadarChart from "@/components/charts/RadarChart";
+import { AlertCard } from "@/components/cards/AlertCard";
 
 export default function Perception() {
   return (
-    <div className="pr-6">
+    <div className="pr-6 mb-10">
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <SummaryCard
           title="Score global"
@@ -45,6 +46,7 @@ export default function Perception() {
           <DonutChart />
         </CardChart>
       </div>
+      <AlertCard />
     </div>
   );
 }
