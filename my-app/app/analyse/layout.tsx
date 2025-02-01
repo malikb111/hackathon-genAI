@@ -19,7 +19,7 @@ export default function AnalyseLayout({
   return (
     <div className="px-8">
       <h2 className="text-3xl font-semibold mt-8">{pageTitle}</h2>
-      <div className="flex justify-between items-center mt-4 mb-8">
+      <div className="flex justify-between items-center mt-4 mb-8 pb-6 border-b border-gray-200">
         <Menubar className="inline-flex w-auto">
           <MenubarMenu>
             <Link href="/analyse" className="cursor-pointer">
