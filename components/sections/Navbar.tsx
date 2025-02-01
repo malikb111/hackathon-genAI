@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { AddDataModal } from "@/components/AddDataModal";
+import { AddDataModal } from "@/components/popup/AddDataModal";
 import { DrawerAlert } from "../popup/DrawerAlert";
 
 export function Navbar() {
