@@ -15,6 +15,7 @@ import {
 } from "@/filters/filter-sentiment";
 import { filterEmotions } from "@/filters/filter-emotions";
 import { filterTonalite } from "@/filters/filter-tonalite";
+import { Loader } from "@/components/sections/Loader";
 
 export default function Perception() {
   const { data, isLoading, error } = useFetchData();
@@ -32,7 +33,7 @@ export default function Perception() {
   const tonalite = filterTonalite(data || null);
 
   if (isLoading) {
-    return <div>Chargement en cours...</div>;
+    return <Loader />;
   }
 
   if (error) {

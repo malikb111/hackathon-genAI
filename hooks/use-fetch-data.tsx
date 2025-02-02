@@ -13,7 +13,18 @@ export const useFetchData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/mock/data.json");
+        const response = await fetch(
+          "https://kalu-api.newgate-it.fr/enedis-analysis",
+          {
+            method: "GET",
+            headers: {
+              "x-api-key":
+                "ImqxB02LFPW2OpeRWF667xWqjWImGKehfocj4gd2LcoDRj667zBtRatzxXIJHCYt4lZZmT02LFPW2OpeRWFxWqjWImGKehfoc",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         if (!response.ok) {
           throw new Error("Erreur lors du chargement des données");
         }

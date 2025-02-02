@@ -9,13 +9,27 @@ import { filterPicActivite } from "@/filters/filter-pic-activite";
 import { filterFrequence } from "@/filters/filter-frequence";
 import { filterMediaActif } from "@/filters/filter-media-actif";
 import { filterTerritoire } from "@/filters/filter-territoire";
+import { Loader } from "@/components/sections/Loader";
+
+interface TerritoireData {
+  name: string;
+  value: number;
+}
 
 export default function Temporality() {
   const { data, isLoading, error } = useFetchData();
   const picActivite = filterPicActivite(data);
   const frequence = filterFrequence(data);
   const mediaActif = filterMediaActif(data);
-  const territoire = filterTerritoire(data);
+  const territoire: TerritoireData[] = filterTerritoire(data);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <div>Erreur: {error.message}</div>;
+  }
 
   return (
     <div className="pr-6">

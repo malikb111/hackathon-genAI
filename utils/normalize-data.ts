@@ -1,3 +1,5 @@
+import { DataItem } from "@/types/data";
+
 export const normalizeString = (str: string): string => {
   return str
     .trim() // Enlève les espaces début/fin
@@ -106,6 +108,27 @@ export const normalizeDataItem = (item: any) => {
   return normalizedItem;
 };
 
-export const normalizeData = (data: any[]): any[] => {
-  return data.map(normalizeDataItem);
+export const normalizeData = (data: any[]): DataItem[] => {
+  return data.map((item) => {
+    // D'abord on transforme les clés de l'API vers notre format
+    const transformedItem = {
+      Territoire: item.territoire,
+      Sujet: item.sujet,
+      "Sujet Gen": item.sujet_gen,
+      Thème: item.theme,
+      "Qualité du retour": item.qualite_retour,
+      Média: item.media,
+      Articles: item.articles,
+      "Type de Contenu": item.contenu_type,
+      Tendance: item.sous_theme,
+      "Sentiment global": item.global_sentiment,
+      Tonalite: item.tonalite,
+      Emotions: item.emotions,
+      Typologie: item.typologie,
+      Opportunite: item.opportunite,
+      Date: new Date(item.date).getTime(),
+    };
+    // Ensuite on applique la normalisation comme avant
+    return normalizeDataItem(transformedItem);
+  });
 };

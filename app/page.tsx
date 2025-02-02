@@ -10,6 +10,7 @@ import AreaChart from "@/components/charts/AreaChart";
 import { CardChart } from "@/components/cards/CardChart";
 import { useFetchData } from "@/hooks/use-fetch-data";
 import { filterOpportunites } from "@/filters/filter-opportunites";
+import { Loader } from "@/components/sections/Loader";
 
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
@@ -20,7 +21,7 @@ export default function Home() {
   console.log(opportunites);
 
   if (isLoading) {
-    return <div>Chargement en cours...</div>;
+    return <Loader />;
   }
 
   if (error) {

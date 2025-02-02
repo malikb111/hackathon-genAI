@@ -10,6 +10,7 @@ import { useFetchData } from "@/hooks/use-fetch-data";
 import { filterQualiteRetour } from "@/filters/filter-qualite-retour";
 import { filterTheme } from "@/filters/filter-theme";
 import { filterTendance } from "@/filters/filter-tendance";
+import { Loader } from "@/components/sections/Loader";
 
 export default function Contenus() {
   const { data, isLoading, error } = useFetchData();
@@ -19,7 +20,7 @@ export default function Contenus() {
   const tendance = filterTendance(data);
 
   if (isLoading) {
-    return <div>Chargement en cours...</div>;
+    return <Loader />;
   }
 
   if (error) {
