@@ -16,11 +16,15 @@ import {
   } from "@/components/ui/context-menu"
 import useFileUpload from "@/hooks/use-upload-data";
 import { useState } from "react";
+import { downloadCSV } from "@/utils/csv";
+import { downloadXLSX } from "@/utils/xlsx";
+import { Download } from "lucide-react";
 
 export function AddDataModal() {
 	// tu utilise ici le custom hook que t'aura fais genre useUploadData
 	const [file, setFile] = useState<File | null>(null);
 	const [fileError, setFileError] = useState<string | null>(null);
+	const [data, setData] = useState<any[] | null>(null);
 	const { uploadFile, isLoading } = useFileUpload();
 
 	const handleFileDrop = (droppedFile: Array<File>) => {
@@ -28,20 +32,46 @@ export function AddDataModal() {
 		if (file && (file.type === 'application/pdf' || file.name.endsWith('.xlsx'))) {
 		  setFile(file);
 		  setFileError(null);
+		  setData(null); // Réinitialiser les données lors du dépôt d'un nouveau fichier
 		} else {
 		  setFileError('Veuillez déposer un fichier XLSX ou PDF');
 		}
 	};
 
-	const handleUpload = () => {
+	const handleUpload = async () => {
 	  if (file) {
-		uploadFile(file);
+		const result = await uploadFile(file);
+		console.log("Upload result:", result); // Pour déboguer
+		if (result) {
+		  setData(result);
+		}
+		else
+			console.log("No file ligne 48")
 	  }
+	};
+
+	const handleDownload = () => {
+		if (data) {
+			console.log("Call downloadCsv ligne 54");
+			downloadCSV(data, `export-${new Date().toISOString()}.csv`);
+		}
+		else
+			console.log("No data ligne 58");
+	};
+
+	const handleDownloadXLSX = () => {
+		if (data) {
+			console.log("Call downloadXLSX");
+			downloadXLSX(data, `export-${new Date().toISOString()}.xlsx`);
+		} else {
+			console.log("No data for XLSX export");
+		}
 	};
 
 	const handleRemoveFile = () => {
 		setFile(null);
 		setFileError(null);
+		setData(null);
 	}
 
 	return (
@@ -81,9 +111,31 @@ export function AddDataModal() {
 					</Dropzone>
 				</ContextMenuTrigger>
 			</ContextMenu>
-			<Button onClick={handleUpload} disabled={isLoading}>
-				{isLoading ? 'Analyse en cours...' : 'Analyser'}
-			</Button>
+			<div className="flex gap-2">
+				<Button onClick={handleUpload} disabled={isLoading} className="flex-1">
+					{isLoading ? 'Analyse en cours...' : 'Analyser'}
+				</Button>
+				{data && data.length > 0 && (
+					<div className="flex gap-2">
+						<Button
+							onClick={handleDownload}
+							variant="outline"
+							className="gap-2"
+						>
+							<Download className="w-4 h-4" />
+							CSV
+						</Button>
+						<Button 
+							onClick={handleDownloadXLSX}
+							variant="outline"
+							className="gap-2"
+						>
+						<Download className="w-4 h-4" />
+							XLS
+						</Button>
+					</div>
+				)}
+			</div>
 		</DialogContent>
 	</Dialog>
   );
