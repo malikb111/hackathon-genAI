@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Filter as FilterIcon, Check } from "lucide-react";
+import { Filter as FilterIcon, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,28 +24,50 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useFetchMediaTypes } from "@/hooks/use-fetch-media-types";
+import { useFilter } from "@/contexts/filter-context";
+import { normalizeString } from "@/utils/normalize-data";
 
 const dateRanges = [
-  { label: "Aujourd'hui", value: "today" },
-  { label: "7 derniers jours", value: "last7days" },
-  { label: "30 derniers jours", value: "last30days" },
-  { label: "Mois dernier", value: "lastMonth" },
-  { label: "Cette année", value: "thisYear" },
-  { label: "Année dernière", value: "lastYear" },
+  {
+    label: "Périodes glissantes",
+    options: [
+      { label: "30 derniers jours", value: "last30" },
+      { label: "60 derniers jours", value: "last60" },
+      { label: "90 derniers jours", value: "last90" },
+      { label: "180 derniers jours", value: "last180" },
+    ],
+  },
+  {
+    label: "Trimestres",
+    options: [
+      { label: "T1 2024 (Jan-Mars)", value: "2024Q1" },
+      { label: "T4 2023 (Oct-Déc)", value: "2023Q4" },
+      { label: "T3 2023 (Juil-Sept)", value: "2023Q3" },
+      { label: "T2 2023 (Avr-Juin)", value: "2023Q2" },
+    ],
+  },
+  {
+    label: "Années",
+    options: [
+      { label: "2024", value: "2024" },
+      { label: "2023", value: "2023" },
+    ],
+  },
 ];
 
 export function Filter() {
   const [open, setOpen] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState<string | null>(null);
-  const [selectedMedia, setSelectedMedia] = React.useState<string[]>([]);
+  const { selectedDate, setSelectedDate, selectedMedia, setSelectedMedia } =
+    useFilter();
   const [searchQuery, setSearchQuery] = React.useState("");
   const { mediaTypes, isLoading, error } = useFetchMediaTypes();
 
   const toggleMedia = (media: string) => {
-    setSelectedMedia((current) =>
-      current.includes(media)
-        ? current.filter((m) => m !== media)
-        : [...current, media]
+    const normalizedMedia = normalizeString(media);
+    setSelectedMedia((prev: string[]) =>
+      prev.includes(normalizedMedia)
+        ? prev.filter((m) => m !== normalizedMedia)
+        : [...prev, normalizedMedia]
     );
   };
 
@@ -64,6 +86,12 @@ export function Filter() {
 
     return filtered;
   }, [searchQuery, mediaTypes]);
+
+  const resetFilters = () => {
+    setSelectedDate(null);
+    setSelectedMedia([]);
+    setSearchQuery("");
+  };
 
   if (error) {
     console.error("Erreur de chargement des médias:", error);
@@ -86,31 +114,64 @@ export function Filter() {
         side="left"
         className="w-[240px] p-2 shadow-lg rounded-xl border border-gray-200"
       >
-        <DropdownMenuLabel className="text-sm font-semibold text-gray-900 mb-1 px-2">
-          Filtres
-        </DropdownMenuLabel>
+        <div className="flex items-center justify-between mb-1 px-2">
+          <DropdownMenuLabel className="text-sm font-semibold text-gray-900">
+            Filtres
+          </DropdownMenuLabel>
+          {(selectedDate || selectedMedia.length > 0) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 px-2 text-xs text-gray-500 hover:text-gray-700"
+              onClick={resetFilters}
+            >
+              Réinitialiser
+            </Button>
+          )}
+        </div>
         <DropdownMenuGroup className="space-y-1">
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-md hover:bg-gray-100 transition-colors">
               <span className="text-gray-700">
                 {selectedDate
-                  ? dateRanges.find((d) => d.value === selectedDate)?.label
+                  ? dateRanges.find((d) =>
+                      d.options.some((o) => o.value === selectedDate)
+                    )?.label
                   : "Période"}
               </span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="p-1 min-w-[160px] rounded-lg">
-              {dateRanges.map((range) => (
-                <DropdownMenuItem
-                  key={range.value}
-                  onClick={() => setSelectedDate(range.value)}
-                  className="py-1.5 px-2 text-sm rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                >
-                  {range.label}
-                </DropdownMenuItem>
+            <DropdownMenuSubContent className="p-1 min-w-[200px] rounded-lg">
+              {dateRanges.map((group) => (
+                <React.Fragment key={group.label}>
+                  <div className="px-2 py-1.5 text-xs font-semibold text-gray-500">
+                    {group.label}
+                  </div>
+                  {group.options.map((range) => (
+                    <DropdownMenuItem
+                      key={range.value}
+                      onClick={() => {
+                        console.log("Setting date:", range.value);
+                        setSelectedDate(range.value);
+                      }}
+                      className="py-1.5 px-2 text-sm rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-3.5 h-3.5 border rounded flex items-center justify-center border-gray-400">
+                          {selectedDate === range.value && (
+                            <Check className="h-2.5 w-2.5 text-blue-600" />
+                          )}
+                        </div>
+                        {range.label}
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                  {group !== dateRanges[dateRanges.length - 1] && (
+                    <DropdownMenuSeparator className="bg-gray-200 my-1" />
+                  )}
+                </React.Fragment>
               ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
-          <DropdownMenuSeparator className="bg-gray-200 my-1" />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="flex items-center justify-between w-full px-2 py-1.5 text-sm rounded-md hover:bg-gray-100 transition-colors">
               <span className="text-gray-700">
@@ -151,7 +212,9 @@ export function Filter() {
                               >
                                 <div className="flex items-center gap-2">
                                   <div className="w-3.5 h-3.5 border rounded flex items-center justify-center border-gray-400">
-                                    {selectedMedia.includes(media) && (
+                                    {selectedMedia.includes(
+                                      normalizeString(media)
+                                    ) && (
                                       <Check className="h-2.5 w-2.5 text-blue-600" />
                                     )}
                                   </div>

@@ -5,12 +5,12 @@ import { CardChart } from "@/components/cards/CardChart";
 import DonutChart from "@/components/charts/DonutChart";
 import BarChart from "@/components/charts/BarChart";
 import RadarChart from "@/components/charts/RadarChart";
-import useFetchData from "@/hooks/use-fetch-data";
+import { useFetchData } from "@/hooks/use-fetch-data";
 import { filterOpportunites } from "@/filters/filter-opportunites";
 
 export default function Perception() {
   const { data, isLoading, error } = useFetchData();
-  const opportunites = filterOpportunites(data?.data || null);
+  const opportunites = filterOpportunites(data || null);
   console.log(opportunites);
   if (isLoading) {
     return <div>Chargement en cours...</div>;

@@ -1,37 +1,21 @@
 "use client";
 import { useState, useEffect } from "react";
 import mockData from "@/public/mock/data.json";
+import { useFilter } from "@/contexts/filter-context";
+import { DataItem } from "@/types/data";
+import { normalizeData } from "@/utils/normalize-data";
 
-interface DataItem {
-  Date: number;
-  Territoire: string;
-  Sujet: string;
-  "Sujet Gen": string;
-  Thème: string;
-  Articles: string;
-  "Type de Contenu": string;
-  "Sentiment global": string;
-  Tonalite: string;
-  Emotions: string;
-  Opportunite: string;
-  Média: string;
-  Typologie: string;
-  Tendance: string;
-  "Qualité du retour": string;
-}
-
-interface DataResponse {
-  data: DataItem[];
-}
-
-const useFetchData = () => {
-  const [data, setData] = useState<any>(null);
+export const useFetchData = () => {
+  const [rawData, setRawData] = useState<DataItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { filterData } = useFilter();
 
   useEffect(() => {
     try {
-      setData({ data: mockData });
+      const normalizedData = normalizeData(mockData);
+      setRawData(normalizedData);
+      console.log(normalizedData);
       setIsLoading(false);
     } catch (err) {
       setError(err as Error);
@@ -39,7 +23,7 @@ const useFetchData = () => {
     }
   }, []);
 
-  return { data, isLoading, error };
-};
+  const filteredData = filterData(rawData);
 
-export default useFetchData;
+  return { data: filteredData, isLoading, error };
+};

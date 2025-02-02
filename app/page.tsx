@@ -8,7 +8,7 @@ import BarChart from "@/components/charts/BarChart";
 import DonutChart from "@/components/charts/DonutChart";
 import AreaChart from "@/components/charts/AreaChart";
 import { CardChart } from "@/components/cards/CardChart";
-import useFetchData from "@/hooks/use-fetch-data";
+import { useFetchData } from "@/hooks/use-fetch-data";
 import { filterOpportunites } from "@/filters/filter-opportunites";
 
 export default function Home() {
@@ -16,7 +16,7 @@ export default function Home() {
 
   const { data, isLoading, error } = useFetchData();
   console.log(data);
-  const opportunites = filterOpportunites(data?.data || null);
+  const opportunites = filterOpportunites(data || null);
   console.log(opportunites);
 
   if (isLoading) {
