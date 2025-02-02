@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/sections/Navbar";
 import { FilterProvider } from "@/contexts/filter-context";
+import { ChatDialog } from "@/components/chat/ChatDialog";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <FilterProvider>
           <Navbar />
           {children}
+          <ChatDialog />
         </FilterProvider>
       </body>
     </html>

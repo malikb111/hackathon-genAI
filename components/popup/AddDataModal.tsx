@@ -13,6 +13,8 @@ import Dropzone from "react-dropzone";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import useFileUpload from "@/hooks/use-upload-data";
 import { useState } from "react";
+import Link from "next/link";
+import { Upload } from "lucide-react";
 
 export function AddDataModal() {
   const [file, setFile] = useState<File | null>(null);
@@ -87,6 +89,14 @@ export function AddDataModal() {
         <Button onClick={handleUpload} disabled={isLoading}>
           {isLoading ? "Analyse en cours..." : "Analyser"}
         </Button>
+        <div className="flex justify-center mt-4">
+          <Link href="/workflow">
+            <Button variant="outline" className="gap-2">
+              <Upload className="h-4 w-4" />
+              Upload
+            </Button>
+          </Link>
+        </div>
       </DialogContent>
     </Dialog>
   );
