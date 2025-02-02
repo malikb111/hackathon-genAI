@@ -8,9 +8,22 @@ import BarChart from "@/components/charts/BarChart";
 import DonutChart from "@/components/charts/DonutChart";
 import AreaChart from "@/components/charts/AreaChart";
 import { CardChart } from "@/components/cards/CardChart";
-
+import { useFetchData } from "@/hooks/use-fetch-data";
+import { filterOpportunites } from "@/filters/filter-opportunites";
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
+
+  const { data: response, isLoading, error } = useFetchData();
+  const opportunites = filterOpportunites(response?.data || null);
+  console.log(opportunites);
+
+  if (isLoading) {
+    return <div>Chargement en cours...</div>;
+  }
+
+  if (error) {
+    return <div>Erreur: {error.message}</div>;
+  }
 
   return (
     <div className="px-8">

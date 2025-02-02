@@ -8,44 +8,66 @@ import {
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
+export type BarData = {
+  name: string;
+  [key: string]: number | string;
+};
+
+interface BarChartComponentProps {
+  data?: BarData[];
+  bars?: string[];
+}
+
+const defaultData = [
+  { name: "January", value: 186 },
+  { name: "February", value: 305 },
+  { name: "March", value: 237 },
+  { name: "April", value: 73 },
+  { name: "May", value: 209 },
+  { name: "June", value: 214 },
 ];
 
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-} satisfies ChartConfig;
+export default function BarChartComponent({
+  data = defaultData,
+  bars = ["value"],
+}: BarChartComponentProps) {
+  const chartConfig = bars.reduce((config, barName) => {
+    return {
+      ...config,
+      [barName]: {
+        label: barName,
+        color: "#2563eb",
+      },
+    };
+  }, {}) satisfies ChartConfig;
 
-export default function BarChartComponent() {
   return (
     <div className="w-full">
       <ChartContainer
         config={chartConfig}
-        className="w-full min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[350px] overflow-x-auto"
+        className="w-full min-h-[150px] sm:min-h-[200px] md:min-h-[250px] overflow-x-auto"
       >
         <BarChart
           accessibilityLayer
-          data={chartData}
-          margin={{ left: 10, right: 10, top: 10, bottom: 10 }}
+          data={data}
+          margin={{ left: 10, right: 10, top: 10, bottom: 30 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
-            dataKey="month"
+            dataKey="name"
             tickLine={false}
             tickMargin={10}
             axisLine={false}
-            tickFormatter={(value) => value.slice(0, 3)}
+            angle={0}
+            height={40}
+            tick={{ fontSize: 12 }}
+            interval={0}
+            textAnchor="middle"
           />
           <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-          <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
+          {bars.map((barName) => (
+            <Bar key={barName} dataKey={barName} fill="#2563eb" radius={8} />
+          ))}
         </BarChart>
       </ChartContainer>
       <div className="mt-4 border-t border-gray-200 pt-4">
