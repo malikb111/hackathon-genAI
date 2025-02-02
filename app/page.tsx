@@ -20,6 +20,7 @@ import {
   filterSentimentNeutre,
 } from "@/filters/filter-sentiment";
 import { filterTheme } from "@/filters/filter-theme";
+import React from "react";
 
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
@@ -46,22 +47,37 @@ export default function Home() {
     }));
 
   const chartConfig = {
-    emotions: {
-      label: "Émotions",
-    },
-    joie: {
-      label: "Joie",
+    positif: {
+      label: "Positif",
       color: "hsl(var(--chart-1))",
     },
-    tristesse: {
-      label: "Tristesse",
+    neutre: {
+      label: "Neutre",
       color: "hsl(var(--chart-2))",
     },
-    colere: {
-      label: "Colère",
+    negatif: {
+      label: "Négatif",
       color: "hsl(var(--chart-3))",
     },
   } satisfies ChartConfig;
+
+  // Transformer les données pour le graphique
+  const transformedData = React.useMemo(() => {
+    const groupedByDate = dateSentiments.reduce((acc, item) => {
+      const date = new Date(item.date).toISOString().split("T")[0];
+      if (!acc[date]) {
+        acc[date] = { date, positif: 0, neutre: 0, negatif: 0 };
+      }
+      const sentiment = item.sentiment.toLowerCase() as
+        | "positif"
+        | "neutre"
+        | "negatif";
+      acc[date][sentiment] += 1;
+      return acc;
+    }, {} as Record<string, { date: string; positif: number; neutre: number; negatif: number }>);
+
+    return Object.values(groupedByDate);
+  }, [dateSentiments]);
 
   const gradients = [
     { id: "fillJoie", color: "hsl(213, 90%, 50%)" },
@@ -77,7 +93,7 @@ export default function Home() {
   }
 
   return (
-    <div className="px-8">
+    <div className="px-8 mb-8">
       <h2 className="text-3xl font-semibold mt-8">{pageTitle}</h2>
       <div className="flex justify-between items-center mt-4 mb-8 pb-6 border-b border-gray-200">
         <div className="flex items-center gap-4">
@@ -110,7 +126,13 @@ export default function Home() {
             </CardChart>
           </div>
           <CardChart title="Évolution temporelle">
-            <AreaChartComponent />
+            <AreaChartComponent
+              data={transformedData}
+              areas={["positif", "neutre", "negatif"]}
+              config={chartConfig}
+              title="Évolution des sentiments"
+              description="Répartition des sentiments au fil du temps"
+            />
           </CardChart>
         </div>
         <div className="flex-none">

@@ -12,6 +12,7 @@ import { filterTerritoire } from "@/filters/filter-territoire";
 import { filterDateSentiments } from "@/filters/filter-date-emotions";
 import { Loader } from "@/components/sections/Loader";
 import { ChartConfig } from "@/components/ui/chart";
+import React from "react";
 
 interface TerritoireData {
   name: string;
@@ -19,19 +20,16 @@ interface TerritoireData {
 }
 
 const chartConfig = {
-  emotions: {
-    label: "Émotions",
-  },
-  joie: {
-    label: "Joie",
+  positif: {
+    label: "Positif",
     color: "hsl(var(--chart-1))",
   },
-  tristesse: {
-    label: "Tristesse",
+  neutre: {
+    label: "Neutre",
     color: "hsl(var(--chart-2))",
   },
-  colere: {
-    label: "Colère",
+  negatif: {
+    label: "Négatif",
     color: "hsl(var(--chart-3))",
   },
 } satisfies ChartConfig;
@@ -49,7 +47,24 @@ export default function Temporality() {
   const mediaActif = filterMediaActif(data);
   const territoire: TerritoireData[] = filterTerritoire(data);
   const dateSentiments = filterDateSentiments(data);
-  console.log(dateSentiments);
+
+  // Transformer les données pour le graphique
+  const transformedData = React.useMemo(() => {
+    const groupedByDate = dateSentiments.reduce((acc, item) => {
+      const date = new Date(item.date).toISOString().split("T")[0];
+      if (!acc[date]) {
+        acc[date] = { date, positif: 0, neutre: 0, negatif: 0 };
+      }
+      const sentiment = item.sentiment.toLowerCase() as
+        | "positif"
+        | "neutre"
+        | "negatif";
+      acc[date][sentiment] += 1;
+      return acc;
+    }, {} as Record<string, { date: string; positif: number; neutre: number; negatif: number }>);
+
+    return Object.values(groupedByDate);
+  }, [dateSentiments]);
 
   if (isLoading) {
     return <Loader />;
@@ -86,7 +101,13 @@ export default function Temporality() {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <CardChart title="Sentiment global" className="w-full">
-          <AreaChartComponent />
+          <AreaChartComponent
+            data={transformedData}
+            areas={["positif", "neutre", "negatif"]}
+            config={chartConfig}
+            title="Évolution des sentiments"
+            description="Répartition des sentiments au fil du temps"
+          />
         </CardChart>
         <CardChart title="Territoire" className="w-full">
           <DonutChart data={territoire} valueKey="value" nameKey="name" />

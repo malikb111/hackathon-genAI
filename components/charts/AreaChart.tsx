@@ -25,19 +25,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+export type AreaData = {
+  date: string;
+  [key: string]: number | string;
+};
+
 interface AreaChartProps {
   title?: string;
   description?: string;
+  data?: AreaData[];
+  areas?: string[];
+  config?: ChartConfig;
 }
 
-interface ChartDataItem {
-  date: string;
-  matin: number;
-  apresmidi: number;
-  soir: number;
-}
-
-const chartData: ChartDataItem[] = [
+const defaultData: AreaData[] = [
   { date: "2024-04-01", matin: 45, apresmidi: 32, soir: 28 },
   { date: "2024-04-02", matin: 52, apresmidi: 38, soir: 35 },
   { date: "2024-04-03", matin: 48, apresmidi: 41, soir: 30 },
@@ -50,10 +51,7 @@ const chartData: ChartDataItem[] = [
   { date: "2024-04-10", matin: 59, apresmidi: 47, soir: 42 },
 ];
 
-const chartConfig = {
-  visitors: {
-    label: "Visiteurs",
-  },
+const defaultConfig = {
   matin: {
     label: "Matin (6h-12h)",
     color: "hsl(var(--chart-1))",
@@ -68,13 +66,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const defaultAreas = ["soir", "apresmidi", "matin"];
+
 export default function AreaChartComponent({
   title = "Répartition temporelle",
   description = "Nombre de visites par période de la journée",
+  data = defaultData,
+  areas = defaultAreas,
+  config = defaultConfig,
 }: AreaChartProps) {
   const [timeRange, setTimeRange] = React.useState("90d");
 
-  const filteredData = chartData.filter((item) => {
+  const filteredData = data.filter((item) => {
     const date = new Date(item.date);
     const referenceDate = new Date("2024-06-30");
     let daysToSubtract = 90;
@@ -90,48 +93,34 @@ export default function AreaChartComponent({
 
   return (
     <div className="w-full">
-      <ChartContainer
-        config={chartConfig}
-        className="aspect-auto h-[250px] w-full"
-      >
+      <ChartContainer config={config} className="aspect-auto h-[250px] w-full">
         <AreaChart data={filteredData}>
           <defs>
-            <linearGradient id="fillMatin" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="hsl(213, 90%, 50%)"
-                stopOpacity={0.8}
-              />
-              <stop
-                offset="95%"
-                stopColor="hsl(213, 90%, 50%)"
-                stopOpacity={0.1}
-              />
-            </linearGradient>
-            <linearGradient id="fillApresMidi" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="hsl(213, 90%, 35%)"
-                stopOpacity={0.8}
-              />
-              <stop
-                offset="95%"
-                stopColor="hsl(213, 90%, 35%)"
-                stopOpacity={0.1}
-              />
-            </linearGradient>
-            <linearGradient id="fillSoir" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="hsl(213, 90%, 20%)"
-                stopOpacity={0.8}
-              />
-              <stop
-                offset="95%"
-                stopColor="hsl(213, 90%, 20%)"
-                stopOpacity={0.1}
-              />
-            </linearGradient>
+            {areas.map((area, index) => (
+              <linearGradient
+                key={area}
+                id={`fill${area}`}
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop
+                  offset="5%"
+                  stopColor={
+                    config[area]?.color || `hsl(213, 90%, ${50 - index * 15}%)`
+                  }
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={
+                    config[area]?.color || `hsl(213, 90%, ${50 - index * 15}%)`
+                  }
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+            ))}
           </defs>
           <CartesianGrid vertical={false} />
           <XAxis
@@ -142,7 +131,7 @@ export default function AreaChartComponent({
             minTickGap={32}
             tickFormatter={(value) => {
               const date = new Date(value);
-              return date.toLocaleDateString("en-US", {
+              return date.toLocaleDateString("fr-FR", {
                 month: "short",
                 day: "numeric",
               });
@@ -153,7 +142,7 @@ export default function AreaChartComponent({
             content={
               <ChartTooltipContent
                 labelFormatter={(value) => {
-                  return new Date(value).toLocaleDateString("en-US", {
+                  return new Date(value).toLocaleDateString("fr-FR", {
                     month: "short",
                     day: "numeric",
                   });
@@ -162,27 +151,16 @@ export default function AreaChartComponent({
               />
             }
           />
-          <Area
-            dataKey="soir"
-            type="natural"
-            fill="url(#fillSoir)"
-            stroke="hsl(var(--chart-3))"
-            stackId="a"
-          />
-          <Area
-            dataKey="apresmidi"
-            type="natural"
-            fill="url(#fillApresMidi)"
-            stroke="hsl(var(--chart-2))"
-            stackId="a"
-          />
-          <Area
-            dataKey="matin"
-            type="natural"
-            fill="url(#fillMatin)"
-            stroke="hsl(var(--chart-1))"
-            stackId="a"
-          />
+          {areas.map((area) => (
+            <Area
+              key={area}
+              dataKey={area}
+              type="natural"
+              fill={`url(#fill${area})`}
+              stroke={config[area]?.color || "hsl(var(--chart-1))"}
+              stackId="a"
+            />
+          ))}
           <ChartLegend content={<ChartLegendContent />} />
         </AreaChart>
       </ChartContainer>
