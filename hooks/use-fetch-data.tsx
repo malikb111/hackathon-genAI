@@ -15,7 +15,6 @@ export const useFetchData = () => {
     try {
       const normalizedData = normalizeData(mockData);
       setRawData(normalizedData);
-      console.log(normalizedData);
       setIsLoading(false);
     } catch (err) {
       setError(err as Error);

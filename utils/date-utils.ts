@@ -4,11 +4,6 @@ export const excelDateToJsDate = (excelDate: number): Date => {
   // et compte le 29 février 1900 qui n'existait pas (bug Excel)
   // donc on doit soustraire un jour pour les dates après le 28 février 1900
   const date = new Date((excelDate - 25569) * 86400 * 1000);
-  console.log("Converting Excel date:", {
-    excelDate,
-    jsDate: date,
-    year: date.getFullYear(),
-  });
   return date;
 };
 
@@ -44,7 +39,6 @@ export const isDateInRange = (date: number, rangeType: string): boolean => {
       );
     case "2024":
       const isIn2024 = jsDate.getFullYear() === 2024;
-      console.log("Checking 2024:", { date, jsDate, isIn2024 });
       return isIn2024;
     case "2023":
       return jsDate.getFullYear() === 2023;

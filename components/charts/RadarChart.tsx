@@ -1,23 +1,25 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
+
+export type RadarData = {
+  month?: string;
+  name?: string;
+  [key: string]: number | string | undefined;
+};
+
+interface RadarChartComponentProps {
+  data?: RadarData[];
+  metrics?: string[];
+}
+
+const defaultData = [
   { month: "January", desktop: 186 },
   { month: "February", desktop: 305 },
   { month: "March", desktop: 237 },
@@ -26,36 +28,46 @@ const chartData = [
   { month: "June", desktop: 214 },
 ];
 
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-} satisfies ChartConfig;
+export default function RadarChartComponent({
+  data = defaultData,
+  metrics = ["desktop"],
+}: RadarChartComponentProps) {
+  const chartConfig = metrics.reduce((config, metricName, index) => {
+    return {
+      ...config,
+      [metricName]: {
+        label: metricName,
+        color: `hsl(var(--chart-${index + 1}))`,
+      },
+    };
+  }, {}) satisfies ChartConfig;
 
-export default function RadarChartComponent() {
   return (
     <div className="w-full">
       <ChartContainer
         config={chartConfig}
-        className="mx-auto aspect-square max-h-[350px]"
+        className="mx-auto h-[350px] w-full p-4"
       >
-        <RadarChart data={chartData}>
+        <RadarChart data={data} outerRadius="80%">
           <ChartTooltip
             cursor={false}
             content={<ChartTooltipContent hideLabel />}
           />
           <PolarGrid gridType="circle" />
-          <PolarAngleAxis dataKey="month" />
-          <Radar
-            dataKey="desktop"
-            fill="var(--color-desktop)"
-            fillOpacity={0.6}
-            dot={{
-              r: 4,
-              fillOpacity: 1,
-            }}
-          />
+          <PolarAngleAxis dataKey="name" />
+          {metrics.map((metricName, index) => (
+            <Radar
+              key={metricName}
+              name={metricName}
+              dataKey={metricName}
+              fill={`hsl(var(--chart-${index + 1}))`}
+              fillOpacity={0.6}
+              dot={{
+                r: 4,
+                fillOpacity: 1,
+              }}
+            />
+          ))}
         </RadarChart>
       </ChartContainer>
       <div className="mt-4 border-t border-gray-200 pt-4">

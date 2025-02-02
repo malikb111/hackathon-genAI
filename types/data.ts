@@ -1,5 +1,4 @@
 export interface DataItem {
-  Date: number;
   Territoire: string;
   Sujet: string;
   "Sujet Gen": string;
@@ -12,6 +11,6 @@ export interface DataItem {
   Opportunite: string;
   Média: string;
   Typologie: string;
-  Tendance: string;
   "Qualité du retour": string;
+  Date: number;
 }
