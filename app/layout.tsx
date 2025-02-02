@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/sections/Navbar";
+import { ChatInterface } from "@/components/chat/ChatInterface"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,9 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <div className="fixed bottom-4 right-4">
+          <ChatInterface />
+        </div>
       </body>
     </html>
   );
