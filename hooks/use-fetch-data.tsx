@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import mockData from "@/public/mock/data.json";
 import { useFilter } from "@/contexts/filter-context";
 import { DataItem } from "@/types/data";
 import { normalizeData } from "@/utils/normalize-data";
@@ -12,14 +11,23 @@ export const useFetchData = () => {
   const { filterData } = useFilter();
 
   useEffect(() => {
-    try {
-      const normalizedData = normalizeData(mockData);
-      setRawData(normalizedData);
-      setIsLoading(false);
-    } catch (err) {
-      setError(err as Error);
-      setIsLoading(false);
-    }
+    const fetchData = async () => {
+      try {
+        const response = await fetch("/mock/data.json");
+        if (!response.ok) {
+          throw new Error("Erreur lors du chargement des données");
+        }
+        const jsonData = await response.json();
+        const normalizedData = normalizeData(jsonData);
+        setRawData(normalizedData);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err as Error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const filteredData = filterData(rawData);

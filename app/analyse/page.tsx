@@ -31,7 +31,6 @@ export default function Perception() {
   const emotions = filterEmotions(data || null);
   const tonalite = filterTonalite(data || null);
 
-  console.log("tonalite", tonalite);
   if (isLoading) {
     return <div>Chargement en cours...</div>;
   }

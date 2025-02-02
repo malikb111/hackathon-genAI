@@ -45,7 +45,7 @@ export default function BarChartComponent({
     <div className="w-full">
       <ChartContainer
         config={chartConfig}
-        className="w-full min-h-[150px] sm:min-h-[200px] md:min-h-[250px] overflow-x-auto"
+        className="w-full min-h-[150px] sm:min-h-[200px] md:min-h-[350px] overflow-x-auto"
       >
         <BarChart
           accessibilityLayer

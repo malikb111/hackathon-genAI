@@ -26,11 +26,11 @@ interface DonutChartComponentProps {
 }
 
 const defaultData: DonutData[] = [
-  { name: "chrome", value: 275, fill: "hsl(var(--chart-1))" },
-  { name: "safari", value: 200, fill: "hsl(var(--chart-2))" },
-  { name: "firefox", value: 187, fill: "hsl(var(--chart-3))" },
-  { name: "edge", value: 173, fill: "hsl(var(--chart-4))" },
-  { name: "other", value: 90, fill: "hsl(var(--chart-5))" },
+  { name: "Blog", value: 275, fill: "hsl(var(--chart-1))" },
+  { name: "Article", value: 200, fill: "hsl(var(--chart-2))" },
+  { name: "TV", value: 187, fill: "hsl(var(--chart-3))" },
+  { name: "Forum", value: 173, fill: "hsl(var(--chart-4))" },
+  { name: "Avis clients", value: 90, fill: "hsl(var(--chart-5))" },
 ];
 
 export default function DonutChartComponent({
