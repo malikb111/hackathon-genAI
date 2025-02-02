@@ -6,8 +6,9 @@ import BarChart from "@/components/charts/BarChart";
 import RadarChart from "@/components/charts/RadarChart";
 
 export default function Perception() {
+	
   return (
-    <div className="mb-6">
+    <div id="perception" className="mb-6">
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <SummaryCard
           title="Mentions Enedis"
@@ -30,7 +31,6 @@ export default function Perception() {
           description="-5% par rapport au mois dernier"
         />
       </div>
-
       <div className="grid grid-cols-2 gap-6">
         <CardChart title="Opportunités detectées" className="w-full">
           <BarChart />

@@ -1,18 +1,21 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface CardChartProps {
   title: string;
-  className?: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-export function CardChart({ title, className, children }: CardChartProps) {
+export function CardChart({ title, children, className }: CardChartProps) {
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
+    <div 
+      className={cn("p-6 rounded-lg border bg-card text-card-foreground shadow-sm", className)}
+      data-chart
+      data-chart-title={title}
+    >
+      <h3 className="text-lg font-semibold mb-4">{title}</h3>
+      {children}
+    </div>
   );
 }

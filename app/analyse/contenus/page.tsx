@@ -6,7 +6,7 @@ import BarChart from "@/components/charts/BarChart";
 
 export default function Contenus() {
   return (
-    <div>
+    <div id="contenus">
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <SummaryCard
           title="Total contenus"

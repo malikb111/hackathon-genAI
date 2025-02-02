@@ -6,7 +6,7 @@ import AreaChart from "@/components/charts/AreaChart";
 
 export default function Temporality() {
   return (
-    <div className="pr-6">
+    <div id="temporalite" className="pr-6">
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <SummaryCard
           title="Temps moyen"
