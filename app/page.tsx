@@ -8,13 +8,15 @@ import BarChart from "@/components/charts/BarChart";
 import DonutChart from "@/components/charts/DonutChart";
 import AreaChart from "@/components/charts/AreaChart";
 import { CardChart } from "@/components/cards/CardChart";
-import { useFetchData } from "@/hooks/use-fetch-data";
+import useFetchData from "@/hooks/use-fetch-data";
 import { filterOpportunites } from "@/filters/filter-opportunites";
+
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
 
-  const { data: response, isLoading, error } = useFetchData();
-  const opportunites = filterOpportunites(response?.data || null);
+  const { data, isLoading, error } = useFetchData();
+  console.log(data);
+  const opportunites = filterOpportunites(data?.data || null);
   console.log(opportunites);
 
   if (isLoading) {
@@ -48,7 +50,7 @@ export default function Home() {
         <div className="flex-1">
           <div className="grid grid-cols-2 gap-6 mb-6">
             <CardChart title="Répartition par type">
-              <BarChart />
+              <BarChart data={opportunites} bars={["opportunites"]} />
             </CardChart>
             <CardChart title="Répartition par source">
               <DonutChart />
