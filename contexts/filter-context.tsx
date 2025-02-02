@@ -22,7 +22,7 @@ export function FilterProvider({ children }: { children: React.ReactNode }) {
     (data: DataItem[]): DataItem[] => {
       const filtered = data.filter((item) => {
         const dateMatch =
-          !selectedDate || isDateInRange(item.Date, selectedDate);
+          !selectedDate || isDateInRange(String(item.Date), selectedDate);
         const mediaMatch =
           selectedMedia.length === 0 || selectedMedia.includes(item.Média);
 
