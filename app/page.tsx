@@ -14,13 +14,36 @@ import { Loader } from "@/components/sections/Loader";
 import AreaChartComponent from "@/components/charts/AreaChart";
 import { filterDateSentiments } from "@/filters/filter-date-emotions";
 import { ChartConfig } from "@/components/ui/chart";
+import { filterSentimentPositif } from "@/filters/filter-sentiment";
+import {
+  filterSentimentNegatif,
+  filterSentimentNeutre,
+} from "@/filters/filter-sentiment";
+import { filterTheme } from "@/filters/filter-theme";
 
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
 
   const { data, isLoading, error } = useFetchData();
-  const opportunites = filterOpportunites(data || null);
+
+  const globalPositif = filterSentimentPositif(data || null);
+  const globalNegatif = filterSentimentNegatif(data || null);
+  const globalNeutre = filterSentimentNeutre(data || null);
+  const globalSentiments = [
+    { name: "Positif", value: globalPositif, fill: "hsl(var(--chart-1))" },
+    { name: "Négatif", value: globalNegatif, fill: "hsl(var(--chart-2))" },
+    { name: "Neutre", value: globalNeutre, fill: "hsl(var(--chart-3))" },
+  ];
   const dateSentiments = filterDateSentiments(data || null);
+  const themeData = filterTheme(data || null);
+  const theme = themeData
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 5)
+    .map((item) => ({
+      ...item,
+      name:
+        item.name.length > 20 ? item.name.substring(0, 20) + "..." : item.name,
+    }));
 
   const chartConfig = {
     emotions: {
@@ -75,11 +98,15 @@ export default function Home() {
       <div className="flex gap-6">
         <div className="flex-1">
           <div className="grid grid-cols-2 gap-6 mb-6">
-            <CardChart title="Répartition par type">
-              <BarChart data={opportunites} bars={["opportunites"]} />
+            <CardChart title="Sentiments globaux">
+              <DonutChart
+                data={globalSentiments}
+                valueKey="value"
+                nameKey="name"
+              />
             </CardChart>
             <CardChart title="Répartition par source">
-              <DonutChart />
+              <DonutChart data={theme} valueKey="value" nameKey="name" />
             </CardChart>
           </div>
           <CardChart title="Évolution temporelle">
