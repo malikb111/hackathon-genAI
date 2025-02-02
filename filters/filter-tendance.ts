@@ -15,7 +15,7 @@ export const filterTendance = (data: any[] | null): DonutData[] => {
 
   return Object.entries(tendanceCount)
     .sort(([, a], [, b]) => b - a) // Trier par ordre décroissant
-    .slice(0, 5) // Ne garder que les 5 premiers
+    .slice(0, 4) // Ne garder que les 5 premiers
     .map(([name, count], index) => ({
       name,
       value: count,

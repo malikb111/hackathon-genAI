@@ -3,8 +3,6 @@ import { DonutData } from "@/components/charts/DonutChart";
 export const filterPicActivite = (data: any[] | null): DonutData[] => {
   if (!data) return [];
 
-  console.log(data);
-
   const monthCount = data.reduce((acc: { [key: string]: number }, item) => {
     try {
       const date = new Date(item.Date);

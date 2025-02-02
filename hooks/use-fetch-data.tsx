@@ -29,6 +29,7 @@ export const useFetchData = () => {
           throw new Error("Erreur lors du chargement des données");
         }
         const jsonData = await response.json();
+        console.log(jsonData);
         const normalizedData = normalizeData(jsonData);
         setRawData(normalizedData);
         setIsLoading(false);

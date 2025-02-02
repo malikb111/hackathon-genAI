@@ -3,18 +3,44 @@ import { Clock, Calendar, History } from "lucide-react";
 import { SummaryCard } from "@/components/cards/SummaryCard";
 import { CardChart } from "@/components/cards/CardChart";
 import DonutChart from "@/components/charts/DonutChart";
-import AreaChart from "@/components/charts/AreaChart";
+import AreaChartComponent from "@/components/charts/AreaChart";
 import { useFetchData } from "@/hooks/use-fetch-data";
 import { filterPicActivite } from "@/filters/filter-pic-activite";
 import { filterFrequence } from "@/filters/filter-frequence";
 import { filterMediaActif } from "@/filters/filter-media-actif";
 import { filterTerritoire } from "@/filters/filter-territoire";
+import { filterDateSentiments } from "@/filters/filter-date-emotions";
 import { Loader } from "@/components/sections/Loader";
+import { ChartConfig } from "@/components/ui/chart";
 
 interface TerritoireData {
   name: string;
   value: number;
 }
+
+const chartConfig = {
+  emotions: {
+    label: "Émotions",
+  },
+  joie: {
+    label: "Joie",
+    color: "hsl(var(--chart-1))",
+  },
+  tristesse: {
+    label: "Tristesse",
+    color: "hsl(var(--chart-2))",
+  },
+  colere: {
+    label: "Colère",
+    color: "hsl(var(--chart-3))",
+  },
+} satisfies ChartConfig;
+
+const gradients = [
+  { id: "fillJoie", color: "hsl(213, 90%, 50%)" },
+  { id: "fillTristesse", color: "hsl(213, 90%, 35%)" },
+  { id: "fillColere", color: "hsl(213, 90%, 20%)" },
+];
 
 export default function Temporality() {
   const { data, isLoading, error } = useFetchData();
@@ -22,6 +48,8 @@ export default function Temporality() {
   const frequence = filterFrequence(data);
   const mediaActif = filterMediaActif(data);
   const territoire: TerritoireData[] = filterTerritoire(data);
+  const dateSentiments = filterDateSentiments(data);
+  console.log(dateSentiments);
 
   if (isLoading) {
     return <Loader />;
@@ -58,7 +86,7 @@ export default function Temporality() {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         <CardChart title="Sentiment global" className="w-full">
-          <AreaChart />
+          <AreaChartComponent />
         </CardChart>
         <CardChart title="Territoire" className="w-full">
           <DonutChart data={territoire} valueKey="value" nameKey="name" />

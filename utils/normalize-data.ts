@@ -128,7 +128,6 @@ export const normalizeData = (data: any[]): DataItem[] => {
       Opportunite: item.opportunite,
       Date: new Date(item.date).getTime(),
     };
-    // Ensuite on applique la normalisation comme avant
     return normalizeDataItem(transformedItem);
   });
 };

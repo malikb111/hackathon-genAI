@@ -52,7 +52,7 @@ export default function Contenus() {
         />
       </div> */}
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 mb-6">
         <div className="grid grid-cols-3 gap-6">
           <CardChart title="Type de contenu" className="w-full">
             <RadarChart

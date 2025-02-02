@@ -11,15 +11,40 @@ import { CardChart } from "@/components/cards/CardChart";
 import { useFetchData } from "@/hooks/use-fetch-data";
 import { filterOpportunites } from "@/filters/filter-opportunites";
 import { Loader } from "@/components/sections/Loader";
+import AreaChartComponent from "@/components/charts/AreaChart";
+import { filterDateSentiments } from "@/filters/filter-date-emotions";
+import { ChartConfig } from "@/components/ui/chart";
 
 export default function Home() {
   const pageTitle: string = "Vue d'ensemble";
 
   const { data, isLoading, error } = useFetchData();
-  console.log(data);
   const opportunites = filterOpportunites(data || null);
-  console.log(opportunites);
+  const dateSentiments = filterDateSentiments(data || null);
 
+  const chartConfig = {
+    emotions: {
+      label: "Émotions",
+    },
+    joie: {
+      label: "Joie",
+      color: "hsl(var(--chart-1))",
+    },
+    tristesse: {
+      label: "Tristesse",
+      color: "hsl(var(--chart-2))",
+    },
+    colere: {
+      label: "Colère",
+      color: "hsl(var(--chart-3))",
+    },
+  } satisfies ChartConfig;
+
+  const gradients = [
+    { id: "fillJoie", color: "hsl(213, 90%, 50%)" },
+    { id: "fillTristesse", color: "hsl(213, 90%, 35%)" },
+    { id: "fillColere", color: "hsl(213, 90%, 20%)" },
+  ];
   if (isLoading) {
     return <Loader />;
   }
@@ -58,7 +83,7 @@ export default function Home() {
             </CardChart>
           </div>
           <CardChart title="Évolution temporelle">
-            <AreaChart />
+            <AreaChartComponent />
           </CardChart>
         </div>
         <div className="flex-none">

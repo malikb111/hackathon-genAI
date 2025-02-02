@@ -108,7 +108,6 @@ export default function useFileUpload(): useFileUpload {
       const excelUrl = workflowResult.data.outputs.output[0].url;
       const excelData = await downloadAndParseExcel(excelUrl);
 
-      console.log(excelData);
       return excelData;
     } catch (err) {
       setError((err as Error).message);

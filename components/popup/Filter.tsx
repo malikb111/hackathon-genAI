@@ -150,7 +150,6 @@ export function Filter() {
                     <DropdownMenuItem
                       key={range.value}
                       onClick={() => {
-                        console.log("Setting date:", range.value);
                         setSelectedDate(range.value);
                       }}
                       className="py-1.5 px-2 text-sm rounded-md hover:bg-gray-100 transition-colors cursor-pointer"

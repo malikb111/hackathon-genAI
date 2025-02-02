@@ -13,9 +13,13 @@ export const filterTheme = (data: any[] | null): DonutData[] => {
     return acc;
   }, {});
 
-  return Object.entries(themeCount).map(([name, count], index) => ({
-    name,
-    value: count,
-    fill: `hsl(var(--chart-${index + 1}))`,
-  }));
+  // Convertir en tableau, trier par nombre d'occurrences et prendre les 7 premiers
+  return Object.entries(themeCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 7)
+    .map(([name, count], index) => ({
+      name,
+      value: count,
+      fill: `hsl(var(--chart-${index + 1}))`,
+    }));
 };
