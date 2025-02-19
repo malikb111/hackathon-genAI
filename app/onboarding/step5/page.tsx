@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-
+import { StepIndicator } from '../components/StepIndicator';
 type Step5FormValues = {
   skills: string[];
   interests: string[];
@@ -63,6 +63,7 @@ export default function Step5() {
 
   return (
     <div className="space-y-6">
+      <StepIndicator currentStep={5} />
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">Compétences et Intérêts</h1>
         <p className="text-muted-foreground">

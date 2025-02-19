@@ -77,7 +77,7 @@ export default function OnboardingLayout({
 
             {/* Section droite - Formulaire */}
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
-              <div className="w-full max-w-md">
+              <div className="w-full">
                 {children}
               </div>
             </div>

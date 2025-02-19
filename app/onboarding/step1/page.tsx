@@ -2,26 +2,43 @@
 
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useOnboarding } from '../../../contexts/OnboardingContext';
-import { Input } from '../../../components/ui/input'; // Composant Input basé sur shadcn/ui
-import { Button } from '../../../components/ui/button';  // Composant Button basé sur shadcn/ui
+import { useOnboarding } from '@/contexts/OnboardingContext';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { StepIndicator } from '../components/StepIndicator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+// Types pour le formulaire
 type Step1FormValues = {
-  name: string;
-  email: string;
+  jobTitle: string;
+  managementLevel: string;
 };
+
+// Niveaux hiérarchiques avec le volume de prospects disponibles
+const managementLevels = [
+  { value: 'owner', label: 'Propriétaire' },
+  { value: 'founder', label: 'Fondateur' },
+  { value: 'c_suite', label: 'Cadre dirigeant (C suite)' },
+  { value: 'partner', label: 'Associé' },
+  { value: 'vp', label: 'Vice-président' },
+  { value: 'head', label: 'Responsable' },
+  { value: 'director', label: 'Directeur' },
+  { value: 'manager', label: 'Manager ' },
+  { value: 'senior', label: 'Senior' },
+  { value: 'entry', label: 'Débutant' },
+  { value: 'intern', label: 'Stagiaire' },
+];
 
 export default function Step1() {
   const { data, setData } = useOnboarding();
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<Step1FormValues>({
-    defaultValues: data.step1 || {},
+  const form = useForm<Step1FormValues>({
+    defaultValues: {
+      jobTitle: data.step1?.jobTitle || '',
+      managementLevel: data.step1?.managementLevel || ''
+    }
   });
 
   const onSubmit = async (values: Step1FormValues) => {
@@ -31,66 +48,88 @@ export default function Step1() {
 
   return (
     <div className="space-y-6">
+      <StepIndicator currentStep={1} />
+      
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold">Informations personnelles</h1>
+        <h1 className="text-2xl font-bold">Profil Cible</h1>
         <p className="text-muted-foreground">
-          Commençons par les informations de base
+          Définissez le profil type de vos prospects
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
-          <label htmlFor="name" className="block text-sm font-medium">
-            Nom
+          <label htmlFor="jobTitle" className="block text-sm font-medium">
+            Intitulé de poste précis
           </label>
           <Input
-            id="name"
-            placeholder="Votre nom"
-            {...register('name', { 
+            id="jobTitle"
+            placeholder="ex: Directeur Commercial, CEO, etc."
+            {...form.register('jobTitle', { 
               required: 'Ce champ est requis',
               minLength: {
                 value: 2,
-                message: 'Le nom doit contenir au moins 2 caractères'
+                message: 'L\'intitulé doit contenir au moins 2 caractères'
               }
             })}
           />
-          {errors.name && <span className="text-sm text-destructive">{errors.name.message}</span>}
+          {form.formState.errors.jobTitle && (
+            <span className="text-sm text-destructive">
+              {form.formState.errors.jobTitle.message}
+            </span>
+          )}
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="email" className="block text-sm font-medium">
-            Email
+          <label className="block text-sm font-medium">
+            Niveau hiérarchique
           </label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="votre@email.com"
-            {...register('email', {
-              required: 'Ce champ est requis',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Adresse email invalide'
-              }
-            })}
-          />
-          {errors.email && <span className="text-sm text-destructive">{errors.email.message}</span>}
+          <Select
+            onValueChange={(value) => form.setValue('managementLevel', value)}
+            defaultValue={data.step1?.managementLevel || ''}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Sélectionnez un niveau hiérarchique" />
+            </SelectTrigger>
+            <SelectContent>
+              {managementLevels.map((level) => (
+                <SelectItem 
+                  key={level.value} 
+                  value={level.value}
+                  className="cursor-pointer hover:bg-primary/5"
+                >
+                  {level.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {form.formState.errors.managementLevel && (
+            <span className="text-sm text-destructive">
+              {form.formState.errors.managementLevel.message}
+            </span>
+          )}
         </div>
 
         <div className="pt-4 flex gap-2">
           <Button 
             type="submit" 
             className="w-full"
-            disabled={isSubmitting}
+            disabled={form.formState.isSubmitting}
           >
-            {isSubmitting ? 'Chargement...' : 'Continuer'}
+            {form.formState.isSubmitting ? 'Chargement...' : 'Continuer'}
           </Button>
         </div>
       </form>
-	  <div className="pt-4 flex gap-2">
-		<Button variant="outline" onClick={() => router.push('/onboarding')}>
-			Page d'accueil
-		</Button>
-	  </div>
+
+      <div className="pt-4 flex gap-2">
+        <Button 
+          variant="outline" 
+          onClick={() => router.push('/onboarding')}
+          className="w-full"
+        >
+          Retour
+        </Button>
+      </div>
     </div>
   );
 }

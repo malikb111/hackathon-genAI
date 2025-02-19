@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { StepIndicator } from '../components/StepIndicator';
 
 type Step6FormValues = {
   username: string;
@@ -47,6 +48,7 @@ export default function Step6() {
 
   return (
     <div className="space-y-6">
+      <StepIndicator currentStep={6} />
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">Configuration du Compte</h1>
         <p className="text-muted-foreground">

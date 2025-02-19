@@ -4,8 +4,8 @@ import React, { createContext, useContext, useState } from 'react';
 
 type OnboardingData = {
   step1?: {
-    name: string;
-    email: string;
+    jobTitle: string;
+    managementLevel: string;
   };
   step2?: {
     address: string;
@@ -39,12 +39,12 @@ type OnboardingData = {
   // Ajoute d'autres étapes au besoin...
 };
 
-interface OnboardingContextProps {
+interface OnboardingContextType {
   data: OnboardingData;
-  setData: (data: Partial<OnboardingData>) => void;
+  setData: (update: Partial<OnboardingData>) => void;
 }
 
-const OnboardingContext = createContext<OnboardingContextProps | undefined>(undefined);
+const OnboardingContext = createContext<OnboardingContextType | undefined>(undefined);
 
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
   const [data, setFormData] = useState<OnboardingData>({});

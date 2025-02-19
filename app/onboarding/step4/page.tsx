@@ -9,7 +9,7 @@ import { useOnboarding } from '@/contexts/OnboardingContext';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-
+import { StepIndicator } from '../components/StepIndicator';
 type Step4FormValues = {
   phoneNumber: string;
   preferredContact: 'email' | 'phone';
@@ -34,6 +34,7 @@ export default function Step4() {
 
   return (
     <div className="space-y-6">
+      <StepIndicator currentStep={4} />
       <div className="space-y-2">
         <h1 className="text-2xl font-bold">Préférences de Contact</h1>
         <p className="text-muted-foreground">

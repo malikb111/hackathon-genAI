@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { StepIndicator } from '../components/StepIndicator';
+import { Badge } from '@/components/ui/badge';
 
 type Step3FormValues = {
 	company: string;
@@ -30,6 +32,7 @@ export default function Step3() {
 
 	return (
 		<div className="space-y-6">
+			<StepIndicator currentStep={3} />
 			<div className="space-y-2">
 				<h1 className="text-2xl font-bold">Expérience Professionnelle</h1>
 				<p className="text-muted-foreground">

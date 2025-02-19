@@ -11,7 +11,7 @@ export default function SubmittedPage() {
   const { data } = useOnboarding();
 
   // Récupération du nom pour personnaliser le message
-  const userName = data.step1?.name || data.step6?.username || 'utilisateur';
+  const userName = data.step1?.jobTitle || data.step6?.username || 'utilisateur';
 
   return (
     <div className="space-y-8 text-center">
@@ -52,12 +52,6 @@ export default function SubmittedPage() {
 
       {/* Boutons d'action */}
       <div className="flex flex-col gap-4 items-center">
-        <Button 
-          onClick={() => router.push('/dashboard')}
-          className="w-full max-w-xs"
-        >
-          Accéder au tableau de bord
-        </Button>
         <Button 
           variant="outline"
           onClick={() => router.push('/onboarding')}
